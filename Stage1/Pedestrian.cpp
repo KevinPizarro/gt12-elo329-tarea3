@@ -11,7 +11,7 @@
  */
 Pedestrian::Pedestrian (Comuna &com, double speed, double deltaAngle): comuna(com) {
     myRand = QRandomGenerator::securelySeeded();
-    this->speed = speed(0.9+0.2myRand.generateDouble());
+    this->speed = speed(0.9+0.2*myRand.generateDouble());
     this->deltaAngle = deltaAngle;
 }
 /**
@@ -29,24 +29,24 @@ string Pedestrian::getState() const {
  */
 void Pedestrian::computeNextState(double delta_t) {
     double r=myRand.generateDouble(); //Escalar para multiplicar la variacion del angulo
-    angle+=deltaAngle(1-2r); //Calculamos el nuevo angulo
-    x_tPlusDelta=x+speedqCos(angle)delta_t; //Calculamos la nueva posicion en X
-    y_tPlusDelta=y+speedqSin(angle)delta_t; //Calculamos la nueva posicion en Y
+    angle+=deltaAngle(1-2*r); //Calculamos el nuevo angulo
+    x_tPlusDelta=x+speed*qCos(angle)*delta_t; //Calculamos la nueva posicion en X
+    y_tPlusDelta=y+speed*qSin(angle)*delta_t; //Calculamos la nueva posicion en Y
     if(x_tPlusDelta < 0){   // rebound logic in x, left side
         angle = M_PI - angle;
-        x_tPlusDelta=x+speedqCos(angle)delta_t;
+        x_tPlusDelta=x+speed*qCos(angle)*delta_t;
         }
     else if( x_tPlusDelta > comuna.getWidth()){ //rebound logic in x, right side
         angle = M_PI - angle;
-        x_tPlusDelta=x+speedqCos(angle)delta_t;
+        x_tPlusDelta=x+speed*qCos(angle)*delta_t;
     }
     if(y_tPlusDelta < 0){   // rebound logic in y, down side
-        angle = 2M_PI - angle;
-        y_tPlusDelta=y+speedqSin(angle)delta_t;
+        angle = 2*M_PI - angle;
+        y_tPlusDelta=y+speed*qSin(angle)*delta_t;
      }
     else if( y_tPlusDelta > comuna.getHeight()){ //rebound logic in y, up side
-        angle = 2M_PI - angle;
-        y_tPlusDelta=y+speedqSin(angle)delta_t;
+        angle = 2*M_PI - angle;
+        y_tPlusDelta=y+speed*qSin(angle)*delta_t;
     }
 }
 /**
