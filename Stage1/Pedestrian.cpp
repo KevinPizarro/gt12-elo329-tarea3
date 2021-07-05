@@ -11,7 +11,7 @@
  */
 Pedestrian::Pedestrian (Comuna &com, double speed, double deltaAngle): comuna(com) {
     myRand = QRandomGenerator::securelySeeded();
-    this->speed = speed(0.9+0.2*myRand.generateDouble());
+    this->speed = speed*(0.9+0.2*myRand.generateDouble());
     this->deltaAngle = deltaAngle;
 }
 /**
@@ -29,7 +29,7 @@ string Pedestrian::getState() const {
  */
 void Pedestrian::computeNextState(double delta_t) {
     double r=myRand.generateDouble(); //Escalar para multiplicar la variacion del angulo
-    angle+=deltaAngle(1-2*r); //Calculamos el nuevo angulo
+    angle+=deltaAngle*(1-2*r); //Calculamos el nuevo angulo
     x_tPlusDelta=x+speed*qCos(angle)*delta_t; //Calculamos la nueva posicion en X
     y_tPlusDelta=y+speed*qSin(angle)*delta_t; //Calculamos la nueva posicion en Y
     if(x_tPlusDelta < 0){   // rebound logic in x, left side
