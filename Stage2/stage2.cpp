@@ -9,18 +9,18 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     if (argc != 2){
-        cout << "Usage: stage1 <configurationFile.txt>" << endl;
+        cout << "Usage: stage2 <configurationFile.txt>" << endl;
         exit(-1);
     }
     ifstream fin(argv[1]); //Recibimos los argumentos de entrada
     /**
      * @brief N: Cantidad de individuos total.
      */
-    double N;
+    int N;
     /**
      * @brief I: Cantidad inicial de individuos infectados.
      */
-    double I;
+    int I;
     /**
      * @brief I_time: Tiempo de duracion de la infeccion.
      */
@@ -45,10 +45,32 @@ int main(int argc, char *argv[])
      * @brief deltaAngle: Variacion maxima del angulo de movimiento.
      */
     double deltaAngle;
+    /**
+     * @brief d: Distancia minima para que exista riesgo de contagio.
+     */
+    double d;
+    /**
+     * @brief M: Fraccion de individuos de cada tipo que usan mascarilla.
+     */
+    double M;
+    /**
+     * @brief p0: Probabilidad de contagio si ninguno de los dos individuos involucrados porta mascarilla.
+     */
+    double p0;
+    /**
+     * @brief p1: Probabilidad de contagio si solo uno de los dos individuos involucrados porta mascarilla.
+     */
+    double p1;
+    /**
+     * @brief p2: Probabilidad de contagio si ambos individuos involucrados portan mascarilla.
+     */
+    double p2;
+
     //Guardamos los parametros en las variables
     fin >> N >> I >> I_time;
     fin >> comunaWidth >> comunaLength;
     fin >> speed >> delta_t >> deltaAngle;
+    fin >> d >> M >> p0 >> p1 >> p2;
     /**
      * @brief samplingTime: Tiempo de muestreo.
      */
@@ -57,13 +79,7 @@ int main(int argc, char *argv[])
      * @brief comuna: Comuna de la simulacion.
      * @return Objeto de tipo comuna.
      */
-    Comuna comuna(comunaWidth, comunaLength);
-    /**
-     * @brief person: Individuo de la simulacion.
-     * @return Objeto de tipo pedestrian.
-     */
-    Pedestrian person(comuna, speed, deltaAngle);
-    comuna.setPerson(person);
+    Comuna comuna(comunaWidth, comunaLength, speed, deltaAngle, N, I, I_time, d, p0);
     /**
      * @brief sim: Simulador.
      * @return Objeto de tipo simulator.
