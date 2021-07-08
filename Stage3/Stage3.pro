@@ -11,7 +11,7 @@ SOURCES += \
     Comuna.cpp \
     Pedestrian.cpp \
     Simulator.cpp \
-    stage2.cpp
+    stage3.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

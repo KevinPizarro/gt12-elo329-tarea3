@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     if (argc != 2){
-        cout << "Usage: stage2 <configurationFile.txt>" << endl;
+        cout << "Usage: stage3 <configurationFile.txt>" << endl;
         exit(-1);
     }
     ifstream fin(argv[1]); //Recibimos los argumentos de entrada
