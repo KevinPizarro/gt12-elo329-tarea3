@@ -1,4 +1,9 @@
-QT -= gui
+QT       += core gui charts
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = PainterRect
+TEMPLATE = app
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -11,6 +16,7 @@ SOURCES += \
     Comuna.cpp \
     Pedestrian.cpp \
     Simulator.cpp \
+    mainwindow.cpp \
     stage3.cpp
 
 # Default rules for deployment.
@@ -21,7 +27,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     Comuna.h \
     Pedestrian.h \
-    Simulator.h
+    Simulator.h \
+    mainwindow.h
 
 DISTFILES += \
     config.txt
+
+FORMS += \
+    mainwindow.ui
