@@ -14,7 +14,6 @@ Simulator::Simulator(ostream &output, Comuna &com,
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()),
             this, SLOT(simulateSlot()));
-    this->archivo.open("Salida.txt");
 }
 /**
  * @brief Simulator::~Simulator : Destructor de la clase simulator que cierra el archivo
@@ -46,12 +45,18 @@ string Simulator::printState(double t) const{
  * @brief Simulator::startSimulation: Metodo para iniciar la simulacion en tiempo 0 y segun el samplingTime
  */
 void Simulator::startSimulation(){
+    stopSimulation();
+    this->archivo.open("Salida.txt");
     archivo << printStateDescription() << endl;
     t=0;
     archivo << printState(t) << endl;
-    timer->start(1000*samplingTime);//Llama al metodo start de la clase QTimer para dar inicio al temporizador
+    timer->start(100*samplingTime);//Llama al metodo start de la clase QTimer para dar inicio al temporizador
 }
-
+void Simulator::stopSimulation(){
+    timer->stop();
+    archivo.close();
+    this->comuna.setPerson();
+}
 /**
  * @brief Simulator::simulateSlot: Metodo para ejecutar una seccion de la simulacion
  */
@@ -67,5 +72,33 @@ void Simulator::simulateSlot(){
     }
     archivo << printState(t) << endl;  // Al terminar la seccion imprime el estado para ese determinado tiempo
 }
+/**
+ * @brief Comuna::getrec: Metodo para obtener la cantidad actual de individuos infectados.
+ * @return int con la cantidad de individuos infectados.
+ */
+int Simulator::getinf(){
+    return this->comuna.getinf();
+}
+/**
+ * @brief Comuna::getrec: Metodo para obtener la cantidad actual de individuos recuperados.
+ * @return int con la cantidad de individuos recuperados.
+ */
+int Simulator::getrec(){
+    return this->comuna.getrec();
+}
+/**
+ * @brief Comuna::getrec: Metodo para obtener la cantidad actual de individuos susceptibles.
+ * @return int con la cantidad de individuos susceptibles.
+ */
+int Simulator::getsus(){
+    return this->comuna.getsus();
+}
 
+/**
+ * @brief Simulator::gettime: Metodo para obtener el tiempo actual de la simulacion.
+ * @return int con el tiempo actual.
+ */
+int Simulator::gettime(){
+    return t;
+}
 

@@ -20,6 +20,11 @@ public:
     string printStateDescription() const;
     string printState(double t) const;
     void startSimulation();
+    void stopSimulation();
+    int getinf();
+    int getsus();
+    int getrec();
+    int gettime();
     QTimer * timer;  // see https://doc.qt.io/qt-5.12/qtimer.html
 public slots:
     void simulateSlot();
