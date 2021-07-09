@@ -12,6 +12,7 @@ using namespace std;
  * @param speed: velocidad del individuo
  * @param deltaAngle: Variacion maxima del angulo del individuo
  */
+
 Pedestrian::Pedestrian(Comuna *com, double speed, double deltaAngle): comuna(com) {
     myRand = QRandomGenerator::securelySeeded();
     this->x = myRand.generateDouble()*com->getWidth();
@@ -20,6 +21,7 @@ Pedestrian::Pedestrian(Comuna *com, double speed, double deltaAngle): comuna(com
     this->deltaAngle = deltaAngle;
     this->state = S;
     this->rec_time = 0;
+    this->mask = false;
 }
 /**
  * @brief Pedestrian::computeNextState: Metodo para calcular el estado del individuo
@@ -91,4 +93,17 @@ void Pedestrian::infect(double rec){
         state = I;
     }
     rec_time = rec;
+}
+/**
+ * @brief Pedestrian::putMask: Metodo para colocarle mascarilla a un individuo.
+ */
+void Pedestrian::putMask(){
+    this->mask = true;
+}
+/**
+ * @brief Pedestrian::getMask: Metodo para saber si un individuo tiene o no mascarilla.
+ * @return
+ */
+bool Pedestrian::getMask(){
+    return this->mask;
 }

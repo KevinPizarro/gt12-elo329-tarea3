@@ -13,6 +13,7 @@ private:
     double x, y, speed, angle, deltaAngle;
     double x_tPlusDelta, y_tPlusDelta;
     double rec_time;
+    bool mask;
     State state;
     Comuna *comuna;
     QRandomGenerator myRand; // see https://doc.qt.io/qt-5/qrandomgenerator.html
@@ -28,6 +29,8 @@ public:
     double getX();
     double getY();
     void infect(double rec);
+    void putMask();
+    bool getMask();
 };
 
 
