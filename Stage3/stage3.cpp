@@ -1,13 +1,15 @@
 #include "Comuna.h"
 #include "Simulator.h"
 #include "Pedestrian.h"
+#include "mainwindow.h"
+#include <QApplication>
 #include <QCoreApplication>
 #include <iostream>
 #include <fstream>
 using namespace std;
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
     if (argc != 2){
         cout << "Usage: stage3 <configurationFile.txt>" << endl;
         exit(-1);
@@ -79,12 +81,13 @@ int main(int argc, char *argv[])
      * @brief comuna: Comuna de la simulacion.
      * @return Objeto de tipo comuna.
      */
-    Comuna comuna(comunaWidth, comunaLength, speed, deltaAngle, N, I, I_time, d, p0);
+    Comuna comuna(comunaWidth, comunaLength, speed, deltaAngle, N, I, I_time, d, M, p0, p1, p2);
     /**
      * @brief sim: Simulador.
      * @return Objeto de tipo simulator.
      */
-    Simulator sim(cout, comuna, delta_t, samplingTime);
-    sim.startSimulation(); //Iniciamos la simulacion.
+    Simulator *sim = new Simulator(cout, comuna, delta_t, samplingTime);
+    MainWindow w(0,sim);
+    w.show();
     return a.exec();
 }
