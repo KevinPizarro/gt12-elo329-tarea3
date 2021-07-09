@@ -50,7 +50,7 @@ void Simulator::startSimulation(){
     archivo << printStateDescription() << endl;
     t=0;
     archivo << printState(t) << endl;
-    timer->start(100*samplingTime);//Llama al metodo start de la clase QTimer para dar inicio al temporizador
+    timer->start(1000*samplingTime);//Llama al metodo start de la clase QTimer para dar inicio al temporizador
 }
 void Simulator::stopSimulation(){
     timer->stop();
