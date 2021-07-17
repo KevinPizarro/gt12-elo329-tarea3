@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     if (argc != 2){
-        cout << "Usage: stage3 <configurationFile.txt>" << endl;
+        cout << "Usage: stage4 <configurationFile.txt>" << endl;
         exit(-1);
     }
     ifstream fin(argv[1]); //Recibimos los argumentos de entrada
