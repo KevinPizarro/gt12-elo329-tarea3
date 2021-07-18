@@ -67,12 +67,25 @@ int main(int argc, char *argv[])
      * @brief p2: Probabilidad de contagio si ambos individuos involucrados portan mascarilla.
      */
     double p2;
+    /**
+     * @brief NumVac: Cantidad de Vacunatorios.
+     */
+    int NumVac;
+    /**
+     * @brief VacSize: Tamano de los vacunatorios.
+     */
+    int VacSize;
+    /**
+     * @brief VacTime: Tiempo para empezar a vacunar.
+     */
+    int VacTime;
 
     //Guardamos los parametros en las variables
     fin >> N >> I >> I_time;
     fin >> comunaWidth >> comunaLength;
     fin >> speed >> delta_t >> deltaAngle;
     fin >> d >> M >> p0 >> p1 >> p2;
+    fin >> NumVac >> VacSize >> VacTime;
     /**
      * @brief samplingTime: Tiempo de muestreo.
      */
@@ -81,7 +94,7 @@ int main(int argc, char *argv[])
      * @brief comuna: Comuna de la simulacion.
      * @return Objeto de tipo comuna.
      */
-    Comuna comuna(comunaWidth, comunaLength, speed, deltaAngle, N, I, I_time, d, M, p0, p1, p2);
+    Comuna comuna(comunaWidth, comunaLength, speed, deltaAngle, N, I, I_time, d, M, p0, p1, p2,NumVac, VacSize, VacTime);
     /**
      * @brief sim: Simulador.
      * @return Objeto de tipo simulator.
