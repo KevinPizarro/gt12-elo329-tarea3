@@ -24,8 +24,15 @@ public:
     int getinf();
     int getsus();
     int getrec();
+    int getvac();
     int gettime();
     QTimer * timer;  // see https://doc.qt.io/qt-5.12/qtimer.html
+    int getN();
+    void setN(int N);
+    int getI();
+    void setI(int I);
+    int getItime();
+    void setItime(int Itime);
 public slots:
     void simulateSlot();
 };
