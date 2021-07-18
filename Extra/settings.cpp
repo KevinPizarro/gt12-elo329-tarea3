@@ -5,7 +5,6 @@ using namespace std;
 Settings::Settings(QWidget *parent, int N, int I, int I_time) :
     QDialog(parent),
     ui(new Ui::Settings)
-
 {
     ui->setupUi(this);
     this->N = N;
