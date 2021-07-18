@@ -16,7 +16,7 @@ private:
     bool mask;
     State state;
     Comuna *comuna;
-    QRandomGenerator myRand;
+    QRandomGenerator myRand; // see https://doc.qt.io/qt-5/qrandomgenerator.html
 
 public:
     Pedestrian(Comuna *com, double speed, double deltaAngle);
