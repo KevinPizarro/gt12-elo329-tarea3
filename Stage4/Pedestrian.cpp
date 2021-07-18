@@ -22,6 +22,7 @@ Pedestrian::Pedestrian(Comuna *com, double speed, double deltaAngle): comuna(com
     this->state = S;
     this->rec_time = 0;
     this->mask = false;
+    this->angle = myRand.generateDouble()*2*M_PI;
 }
 /**
  * @brief Pedestrian::computeNextState: Metodo para calcular el estado del individuo
@@ -48,7 +49,7 @@ void Pedestrian::computeNextState(double delta_t) {
         angle = 2*M_PI - angle;
         y_tPlusDelta=y+speed*qSin(angle)*delta_t;
     }
-    if(state == I){
+    if(state == I){//Logica para cambiar de infectado a recuperado.
         rec_time -= delta_t;
         if(0 >= rec_time){
             state = R;
@@ -106,4 +107,10 @@ void Pedestrian::putMask(){
  */
 bool Pedestrian::getMask(){
     return this->mask;
+}
+/**
+ * @brief Pedestrian::vaccine: Metodo para cambiar estado del individuo a vacunado.
+ */
+void Pedestrian::vaccine(){
+    this->state = V;
 }

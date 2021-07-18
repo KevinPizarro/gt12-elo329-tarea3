@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>602</width>
-    <height>291</height>
+    <height>293</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,6 +41,7 @@
     <property name="title">
      <string>Settings</string>
     </property>
+    <addaction name="actionSettings"/>
    </widget>
    <addaction name="menuControl"/>
    <addaction name="menuSettings"/>
@@ -54,6 +55,11 @@
   <action name="actionStop">
    <property name="text">
     <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

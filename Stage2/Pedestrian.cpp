@@ -20,6 +20,7 @@ Pedestrian::Pedestrian(Comuna *com, double speed, double deltaAngle): comuna(com
     this->deltaAngle = deltaAngle;
     this->state = S;
     this->rec_time = 0;
+    this->angle = myRand.generateDouble()*2*M_PI;
 }
 /**
  * @brief Pedestrian::computeNextState: Metodo para calcular el estado del individuo
