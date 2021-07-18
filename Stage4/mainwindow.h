@@ -7,7 +7,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "Simulator.h"
-
+#include "settings.h"
 namespace Ui {
 class MainWindow;
 }
@@ -33,12 +33,22 @@ private slots:
      * @brief on_actionStop_triggered: Si el boton stop es presionado entonces para la simulacion.
      */
     void on_actionStop_triggered();
-
+    /**
+     * @brief on_actionSettings_triggered: Si el boton settings es presionado, se llama a este slot.
+     */
+    void on_actionSettings_triggered();
 public slots:
     /**
      * @brief actgraph: Metodo que actualiza el grafico con los ultimos datos obtenidos.
      */
     void actgraph();
+    /**
+     * @brief CloseSet: Metodo a ejecutar al cerrar la ventana de settings.
+     * @param N: Cantidad de individuos nueva.
+     * @param I: Cantidad de infectados nueva.
+     * @param Itime: Nuevo tiempo de infeccion.
+     */
+    void CloseSet(int N, int I, int Itime);
 private:
     /**
      * @brief simulator Se crea un objeto de la clase Simulator.
@@ -59,6 +69,10 @@ private:
      */
     QLineSeries *rec;
     /**
+     * @brief rec: Series superiores para vacunados.
+     */
+    QLineSeries *vac;
+    /**
      * @brief susrec: Series intermedias entre susceptibles y recuperados para un correcto "montaje".
      */
     QLineSeries *susrec;
@@ -66,6 +80,10 @@ private:
      * @brief recinf: : Series intermedias entre recuperados e infectados para un correcto "montaje".
      */
     QLineSeries *recinf;
+    /**
+     * @brief recinf: : Series intermedias entre vacunados e infectados para un correcto "montaje".
+     */
+    QLineSeries *vacinf;
     /**
      * @brief infa: Series inferiores para infectados.
      */
@@ -79,6 +97,10 @@ private:
      */
     QAreaSeries *reca;
     /**
+     * @brief vaca: Series inferiores para vacunados
+     */
+    QAreaSeries *vaca;
+    /**
      * @brief chart: Grafico.
      */
     QChart *chart;
@@ -90,6 +112,17 @@ private:
      * @brief timer: Temporizador para la simulacion.
      */
     QTimer *timer;
+    /**
+     * @brief flag: Variable para revisar si la simulacion esta en pausa.
+     */
+    bool flag;
+    /**
+     * @brief settings: Ventana de settings.
+     */
+    Settings *settings;
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev);
+
 };
 
 
