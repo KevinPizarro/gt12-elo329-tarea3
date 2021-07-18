@@ -18,8 +18,11 @@ using namespace std;
  * @param p0: Probabilidad de contagio sin mascarillas.
  * @param p1: Probabilidad de contagio un individuo sin mascarilla.
  * @param p2: Probabilidad de contagio con mascarillas.
+ * @param NumVac: Cantidad de Vacunatorios.
+ * @param VacSize: Tamano de los Vacunatorios.
+ * @param VacTime: Tiempo al que empezar a Vacunar.
  */
-Comuna::Comuna(double width, double length, double speed, double deltaAngle, int N_T, int N_I, double rec_time, double d, double M, double p0, double p1, double p2) : territory(0, 0, width, length) {
+Comuna::Comuna(double width, double length, double speed, double deltaAngle, int N_T, int N_I, double rec_time, double d, double M, double p0, double p1, double p2, int NumVac, int VacSize, int VacTime) : territory(0, 0, width, length) {
     this->pPerson = new vector <Pedestrian>;
     this->rec_time = rec_time;
     this->speed = speed;
@@ -31,6 +34,10 @@ Comuna::Comuna(double width, double length, double speed, double deltaAngle, int
     this->p2 = p2;
     this->N_I = N_I;
     this->N_T = N_T;
+    this->NumVac = NumVac;
+    this->VacSize = VacSize;
+    this->VacTime = VacTime;
+    this->vacflag = true;
     myRand2 = QRandomGenerator::securelySeeded();
     for(int i=0;i<N_T;i++){//Inicializacion de todos los individuos
         if(i < N_I){//Se infectan N_I individuos inicialmente
@@ -45,7 +52,7 @@ Comuna::Comuna(double width, double length, double speed, double deltaAngle, int
             if(i - N_I < (N_T-N_I)*M){//Logica para colocar mascarillas
                 pPerson->at(i).putMask();
             }
-        }
+       }
     }
 }
 /**
@@ -66,9 +73,18 @@ double Comuna::getHeight() const {
  * @brief Comuna::computeNextState: Metodo que computa el proximo estado para todos los individuos
  * @param delta_t Variacion del tiempo entre cada calculo del estado
  */
-void Comuna::computeNextState(double delta_t) {
+void Comuna::computeNextState(double delta_t, double st) {
+    if(this->VacTime <= st && vacflag){
+        this->setVac();
+        this->vacflag = false;
+    }
     for(int i=0;i < (int)pPerson->size();i++){ //Calculamos el estado de contagio persona a persona.
         for(int j=0; j< (int)pPerson->size();j++){ //Revisamos el resto de personas.
+            if(st >= this->VacTime){
+                if(pPerson->at(i).getState() == S && existVac(pPerson->at(i))){
+                    pPerson->at(i).vaccine();
+                }
+            }
             if(pPerson->at(i).getState() == S && pPerson->at(j).getState() == I){
                 double e =  qSqrt(qPow(pPerson->at(i).getX() - pPerson->at(j).getX(),2) + qPow(pPerson->at(i).getY() - pPerson->at(j).getY(),2));
                 if(e < d){
@@ -94,6 +110,7 @@ void Comuna::computeNextState(double delta_t) {
     for(int i=0; i < (int)pPerson->size();i++) { //Calculamos los el siguiente estado de todos los individuos.
         pPerson->at(i).computeNextState(delta_t);
     }
+    st += delta_t;
 }
 /**
  * @brief Comuna::updateState Se actualiza la posición del individuo
@@ -115,11 +132,13 @@ string Comuna::getStateDescription() {
  * @return Obtiene los numeros de infectados, recuperados y susceptibles.
  */
 string Comuna::getState() const {
-    int sus=0,inf=0,rec=0;
-    State status;
+    int sus=0,inf=0,rec=0,vac=0;
     for(int i=0; i < (int)pPerson->size();i++){//Revisa el estado para cada individuo e incrementa sus contadores respectivos
-        status = pPerson->at(i).getState();
+        State status = pPerson->at(i).getState();
         switch (status){
+        case V:
+            vac++;
+            break;
         case R:
             rec++;
             break;
@@ -131,7 +150,7 @@ string Comuna::getState() const {
             break;
         }
     }
-    string s = to_string(inf) + ",\t" + to_string(rec) + ",\t" + to_string(sus);
+    string s = to_string(vac) + ",\t" + to_string(inf) + ",\t" + to_string(rec) + ",\t" + to_string(sus);
     return s;
 }
 /**
@@ -177,6 +196,21 @@ int Comuna::getsus(){
 }
 
 /**
+ * @brief Comuna::getvac: Metodo para obtener la cantidad actual de individuos vacunados.
+ * @return int con la cantidad de individuos vacunados.
+ */
+int Comuna::getvac(){
+    int vac = 0;
+    for(int i=0; i < (int)pPerson->size();i++){
+        if(pPerson->at(i).getState() == V){
+            vac++;
+        }
+    }
+    return vac;
+}
+
+
+/**
  * @brief Comuna::setPerson: Metodo para reiniciar las personas de la comuna.
  */
 void Comuna::setPerson(){
@@ -196,4 +230,97 @@ void Comuna::setPerson(){
             }
         }
     }
+}
+
+int Comuna::getN(){
+    return this->N_T;
+}
+
+void Comuna::setN(int N){
+    this->N_T = N;
+}
+
+int Comuna::getI(){
+    return this->N_I;
+}
+
+void Comuna::setI(int I){
+    this->N_I = I;
+}
+
+int Comuna::getItime(){
+    return this->rec_time;
+}
+
+void Comuna::setItime(int Itime){
+    this->rec_time = Itime;
+}
+
+void Comuna::setVac(){
+    double x;
+    double y;
+    bool flag = false;
+    int cont = 0;
+    QRect vac;
+    QRect vac1;
+    do{
+        this->Vac = new vector <QRect>;
+        cont = 0;
+        flag = false;
+        for(int i = 0; i < this->NumVac ; i++){
+            x = myRand2.generateDouble()*this->getWidth();
+            y = myRand2.generateDouble()*this->getHeight();
+            if(x >= this->getWidth() - this->VacSize){ //Nos aseguramos que el vacunatorio quede dentro de la comuna en X
+                x -= this->VacSize;
+            }
+            if(y >= this->getHeight() - this->VacSize){ //Nos aseguramos que el vacunatorio quede dentro de la comuna en Y
+                y -= this->VacSize;
+            }
+            if(i == 0){ //Si es el primer vacunatorio, lo colocamos en cualquier parte interior de la comuna
+                vac1 = QRect(x,y,this->VacSize,this->VacSize);
+                this->Vac->push_back(vac1);
+            }
+            else{
+                vac = QRect(x,y,this->VacSize,this->VacSize);
+                if(interVac(vac)){ //Revisamos si el vacunatorio intercepta con alguno de los vacunatorios ya colocados
+                    while(interVac(vac)){ //Hasta que conseguir una posicion que no intercepte ningun vacunatorio anterior, recalculamos X e Y
+                        x = myRand2.generateDouble()*this->getWidth();
+                        y = myRand2.generateDouble()*this->getHeight();
+                        if(x >= this->getWidth() - this->VacSize){
+                            x -= this->VacSize;
+                        }
+                        if(y >= this->getHeight() - this->VacSize){
+                            y -= this->VacSize;
+                        }
+                        vac = QRect(x,y,this->VacSize,this->VacSize);
+                        cont++; //Contamos cuantas veces se ha intentado ubicar dicho Vacunatorio
+                        if(cont > 10){ //Si llevamos mas de 10 intentos
+                            flag = true;
+                            delete(this->Vac);
+                            break;
+                        }
+                    }
+                } //Cuando encontramos un vacunatorio que cumple con las condiciones, lo agregamos al vector
+            this->Vac->push_back(vac);
+            }
+        }
+    } while(flag);
+}
+
+bool Comuna::existVac(Pedestrian p){
+    for(int i=0; i < (int)this->Vac->size();i++){
+        if(this->Vac->at(i).contains(p.getX(),p.getY())){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Comuna::interVac(QRect vac){
+    for(int i=0; i < (int)this->Vac->size();i++){
+        if(this->Vac->at(i).intersects(vac)){
+            return true;
+        }
+    }
+    return false;
 }
