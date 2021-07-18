@@ -22,6 +22,7 @@ Pedestrian::Pedestrian(Comuna *com, double speed, double deltaAngle): comuna(com
     this->state = S;
     this->rec_time = 0;
     this->mask = false;
+    this->angle = myRand.generateDouble()*2*M_PI;
 }
 /**
  * @brief Pedestrian::computeNextState: Metodo para calcular el estado del individuo
@@ -106,4 +107,8 @@ void Pedestrian::putMask(){
  */
 bool Pedestrian::getMask(){
     return this->mask;
+}
+
+void Pedestrian::vaccine(){
+    this->state = V;
 }

@@ -5,7 +5,7 @@
 
 using namespace std;
 enum State{
-    S,I,R //S para susceptibles, I para infectados, R para recuperados
+    S,I,R,V //S para susceptibles, I para infectados, R para recuperados, V para Vacunados
 };
 class Comuna;
 class Pedestrian{
@@ -21,7 +21,7 @@ private:
 public:
     Pedestrian(Comuna *com, double speed, double deltaAngle);
     static string getStateDescription() {
-        return "Inf,\tRec,\tSus";
+        return "Vac\tInf,\tRec,\tSus";
     };
     State getState();
     void computeNextState(double delta_t);
@@ -31,6 +31,7 @@ public:
     void infect(double rec);
     void putMask();
     bool getMask();
+    void vaccine();
 };
 
 
