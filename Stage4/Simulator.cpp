@@ -66,8 +66,8 @@ void Simulator::simulateSlot(){
      */
     double nextStop=t+samplingTime;
     while(t < nextStop) {     // Computa y actualiza nuevos estados hasta que se cumpla el tiempo de la seccion de simulacion
-       comuna.computeNextState(delta_t); // Computa el nuevo valor de estado para la comuna
-       comuna.updateState();  // Actualiza el estado de la comuna
+       this->comuna.computeNextState(delta_t,gettime()); // Computa el nuevo valor de estado para la comuna
+       this->comuna.updateState();  // Actualiza el estado de la comuna
        t+=delta_t;
     }
     archivo << printState(t) << endl;  // Al terminar la seccion imprime el estado para ese determinado tiempo
@@ -95,10 +95,64 @@ int Simulator::getsus(){
 }
 
 /**
+ * @brief Comuna::getvac: Metodo para obtener la cantidad actual de individuos vacunados.
+ * @return int con la cantidad de individuos vacunados.
+ */
+int Simulator::getvac(){
+    return this->comuna.getvac();
+}
+/**
  * @brief Simulator::gettime: Metodo para obtener el tiempo actual de la simulacion.
  * @return int con el tiempo actual.
  */
 int Simulator::gettime(){
     return t;
+}
+/**
+ * @brief getN: Obtiene el numero de individuos de la simulacion.
+ * @return Int con la cantidad de individuos.
+ */
+int Simulator::getN(){
+    return this->comuna.getN();
+}
+
+/**
+ * @brief setN: Modifica la cantidad de individuos de la simulacion.
+ * @param N: Cantidad de individuos.
+ */
+void Simulator::setN(int N){
+    this->comuna.setN(N);
+}
+
+/**
+ * @brief getI: Obtiene el numero de individuos infectados de la simulacion.
+ * @return Int con la cantidad de individuos infectados.
+ */
+int Simulator::getI(){
+    return this->comuna.getI();
+}
+
+/**
+ * @brief setN: Modifica la cantidad de individuos infectados de la simulacion.
+ * @param I: Cantidad de individuos infectados.
+ */
+void Simulator::setI(int I){
+    this->comuna.setI(I);
+}
+
+/**
+ * @brief getItime: Obtiene el tiempo de infeccion de la simulacion.
+ * @return Int que representa la cantidad de tiempo que dura la infeccion.
+ */
+int Simulator::getItime(){
+    return this->comuna.getItime();
+}
+
+/**
+ * @brief setItime: Modifica el tiempo de infeccion de la simulacion.
+ * @param Itime: Nuevo tiempo de infeccion.
+ */
+void Simulator::setItime(int Itime){
+    this->comuna.setItime(Itime);
 }
 
