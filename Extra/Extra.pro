@@ -18,7 +18,7 @@ SOURCES += \
     Simulator.cpp \
     mainwindow.cpp \
     settings.cpp \
-    stage4.cpp
+    Extra.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

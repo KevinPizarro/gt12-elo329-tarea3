@@ -15,6 +15,7 @@ Pedestrian::Pedestrian (Comuna &com, double speed, double deltaAngle): comuna(co
     this->y = myRand.generateDouble()*com->getHeight();
     this->speed = speed*(0.9+0.2*myRand.generateDouble());
     this->deltaAngle = deltaAngle;
+    this->angle = myRand.generateDouble()*2*M_PI;
 }
 /**
  * @brief Pedestrian::getState Metodo para obtener el estado actual del individuo
