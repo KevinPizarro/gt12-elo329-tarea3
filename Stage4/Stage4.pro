@@ -17,6 +17,7 @@ SOURCES += \
     Pedestrian.cpp \
     Simulator.cpp \
     mainwindow.cpp \
+    settings.cpp \
     stage4.cpp
 
 # Default rules for deployment.
@@ -28,10 +29,12 @@ HEADERS += \
     Comuna.h \
     Pedestrian.h \
     Simulator.h \
-    mainwindow.h
+    mainwindow.h \
+    settings.h
 
 DISTFILES += \
     config.txt
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    settings.ui
