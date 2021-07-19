@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent,Simulator *sim) :
     this->setCentralWidget(chartView);
     this->flag = true;
     settings = new Settings(this,this->simulator->getN(),this->simulator->getI(),this->simulator->getItime());
+    this->installEventFilter(this);
 }
 /**
  * @brief MainWindow::~MainWindow: Destructor de Mainwindow.
@@ -74,10 +75,13 @@ void MainWindow::on_actionStart_triggered()
 void MainWindow::on_actionStop_triggered()
 {
     simulator->stopSimulation();
+    this->simulator->neutral();
     timer->stop();
     flag = true;
 }
-
+/**
+ * @brief MainWindow::on_actionSettings_triggered: SLOT a ejecutar al pulsar settings.
+ */
 void MainWindow::on_actionSettings_triggered(){
     if(flag){
         settings->show();
@@ -163,8 +167,36 @@ void MainWindow::resetgraph(){
     this->chartView = new QChartView(chart);
     this->setCentralWidget(chartView);
 }
+/**
+ * @brief MainWindow::CloseSet: Al cerrar ventana de settings guarda los valores
+ */
 void MainWindow::CloseSet(int N, int I, int Itime){
     this->simulator->setN(N);
     this->simulator->setI(I);
     this->simulator->setItime(Itime);
+}
+
+/**
+ *  @brief MainWindow::eventFilter: Metodo que realiza la logica para acelerar y ralentizar segun la tecla presionada
+ */
+bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+    if (obj == this) {
+        if (event->type() == QEvent::KeyPress) {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+            if(keyEvent->key() == 16777234){
+                this->simulator->slower();
+            }
+            else if(keyEvent->key() == 16777236){
+                this->simulator->faster();
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        // pass the event on to the parent class
+        return QMainWindow::eventFilter(obj, event);
+    }
 }
