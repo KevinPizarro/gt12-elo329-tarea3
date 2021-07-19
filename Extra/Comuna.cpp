@@ -231,31 +231,51 @@ void Comuna::setPerson(){
         }
     }
 }
-
+/**
+ * @brief Comuna::getN
+ * @return el numero total de individuos
+ */
 int Comuna::getN(){
     return this->N_T;
 }
-
+/**
+ * @brief Comuna::setN
+ * @param N El nuevo numero total de individuos
+ */
 void Comuna::setN(int N){
     this->N_T = N;
 }
-
+/**
+ * @brief Comuna::getI
+ * @return Numero de infectados
+ */
 int Comuna::getI(){
     return this->N_I;
 }
-
+/**
+ * @brief Comuna::setI
+ * @param I El nuevo numero de infectados
+ */
 void Comuna::setI(int I){
     this->N_I = I;
 }
-
+/**
+ * @brief Comuna::getItime
+ * @return El tiempo de recuperacion
+ */
 int Comuna::getItime(){
     return this->rec_time;
 }
-
+/**
+ * @brief Comuna::setItime
+ * @param Itime El nuevo tiempo de recuperacion
+ */
 void Comuna::setItime(int Itime){
     this->rec_time = Itime;
 }
-
+/**
+ * @brief Comuna::setVac Contiene la logica de vacunacion
+ */
 void Comuna::setVac(){
     double x;
     double y;
@@ -270,43 +290,59 @@ void Comuna::setVac(){
         for(int i = 0; i < this->NumVac ; i++){
             x = myRand2.generateDouble()*this->getWidth();
             y = myRand2.generateDouble()*this->getHeight();
-            if(x >= this->getWidth() - this->VacSize){ //Nos aseguramos que el vacunatorio quede dentro de la comuna en X
+            if(x >= this->getWidth() - this->VacSize){
                 x -= this->VacSize;
+                if(x < 0){
+                    x = 0;
+                }
             }
-            if(y >= this->getHeight() - this->VacSize){ //Nos aseguramos que el vacunatorio quede dentro de la comuna en Y
+            if(y >= this->getHeight() - this->VacSize){
                 y -= this->VacSize;
+                if(y < 0){
+                    y = 0;
+                }
             }
-            if(i == 0){ //Si es el primer vacunatorio, lo colocamos en cualquier parte interior de la comuna
+            if(i == 0){
                 vac1 = QRect(x,y,this->VacSize,this->VacSize);
                 this->Vac->push_back(vac1);
             }
             else{
                 vac = QRect(x,y,this->VacSize,this->VacSize);
-                if(interVac(vac)){ //Revisamos si el vacunatorio intercepta con alguno de los vacunatorios ya colocados
-                    while(interVac(vac)){ //Hasta que conseguir una posicion que no intercepte ningun vacunatorio anterior, recalculamos X e Y
+                if(interVac(vac)){
+                    while(interVac(vac)){
                         x = myRand2.generateDouble()*this->getWidth();
                         y = myRand2.generateDouble()*this->getHeight();
                         if(x >= this->getWidth() - this->VacSize){
                             x -= this->VacSize;
+                            if(x < 0){
+                                x = 0;
+                            }
                         }
                         if(y >= this->getHeight() - this->VacSize){
                             y -= this->VacSize;
+                            if(y < 0){
+                                y = 0;
+                            }
                         }
                         vac = QRect(x,y,this->VacSize,this->VacSize);
-                        cont++; //Contamos cuantas veces se ha intentado ubicar dicho Vacunatorio
-                        if(cont > 10){ //Si llevamos mas de 10 intentos
+                        cont++;
+                        if(cont > 10){
                             flag = true;
                             delete(this->Vac);
                             break;
                         }
                     }
-                } //Cuando encontramos un vacunatorio que cumple con las condiciones, lo agregamos al vector
+                }
             this->Vac->push_back(vac);
             }
         }
     } while(flag);
 }
-
+/**
+ * @brief Comuna::existVac
+ * @param p El pedestrian sobre el que se hace la consutla
+ * @return Si el pedestrian esta sobre un vacunatorio
+ */
 bool Comuna::existVac(Pedestrian p){
     for(int i=0; i < (int)this->Vac->size();i++){
         if(this->Vac->at(i).contains(p.getX(),p.getY())){
@@ -315,7 +351,11 @@ bool Comuna::existVac(Pedestrian p){
     }
     return false;
 }
-
+/**
+ * @brief Comuna::interVac
+ * @param vac Vacunatorio
+ * @return Si es que el vacunatorio consultado se intersecta con otro ya creado
+ */
 bool Comuna::interVac(QRect vac){
     for(int i=0; i < (int)this->Vac->size();i++){
         if(this->Vac->at(i).intersects(vac)){
