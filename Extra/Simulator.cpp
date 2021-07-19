@@ -52,6 +52,9 @@ void Simulator::startSimulation(){
     archivo << printState(t) << endl;
     timer->start(1000*samplingTime);//Llama al metodo start de la clase QTimer para dar inicio al temporizador
 }
+/**
+ * @brief Simulator::stopSimulation: Metodo para parar la simulacion.
+ */
 void Simulator::stopSimulation(){
     timer->stop();
     archivo.close();
@@ -73,7 +76,7 @@ void Simulator::simulateSlot(){
     archivo << printState(t) << endl;  // Al terminar la seccion imprime el estado para ese determinado tiempo
 }
 /**
- * @brief Comuna::getrec: Metodo para obtener la cantidad actual de individuos infectados.
+ * @brief Comuna::getinf: Metodo para obtener la cantidad actual de individuos infectados.
  * @return int con la cantidad de individuos infectados.
  */
 int Simulator::getinf(){
@@ -87,7 +90,7 @@ int Simulator::getrec(){
     return this->comuna.getrec();
 }
 /**
- * @brief Comuna::getrec: Metodo para obtener la cantidad actual de individuos susceptibles.
+ * @brief Comuna::getsus: Metodo para obtener la cantidad actual de individuos susceptibles.
  * @return int con la cantidad de individuos susceptibles.
  */
 int Simulator::getsus(){
@@ -155,4 +158,21 @@ int Simulator::getItime(){
 void Simulator::setItime(int Itime){
     this->comuna.setItime(Itime);
 }
-
+/**
+ * @brief Simulator::faster: Metodo para acelerar el paso del tiempo de la simulacion.
+ */
+void Simulator::faster(){
+    this->timer->setInterval(timer->interval()/2);
+}
+/**
+ * @brief Simulator::slower: Metodo para disminuir el paso del tiempo de la simulacion.
+ */
+void Simulator::slower(){
+    this->timer->setInterval(timer->interval()*2);
+}
+/**
+ * @brief Simulator::neutral: Metodo para reiniciar el paso del tiempo de la simulacion.
+ */
+void Simulator::neutral(){
+    this->timer->setInterval(1000*samplingTime);
+}
