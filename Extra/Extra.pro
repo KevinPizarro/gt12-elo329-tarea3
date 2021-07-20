@@ -33,6 +33,7 @@ HEADERS += \
     settings.h
 
 DISTFILES += \
+    C:/Users/Miguel/AppData/Local/Temp/diagrama_uml.qmodel \
     config.txt
 
 FORMS += \
