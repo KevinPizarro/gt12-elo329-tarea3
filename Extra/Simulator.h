@@ -5,8 +5,7 @@
 #include <QTimer>
 #include <string>
 #include <fstream>
-class Simulator: public QObject { // By inheriting from QObject,
-    //our class can use signal and slot mechanism Qt provides.
+class Simulator: public QObject {
     Q_OBJECT
 private:
     Comuna &comuna;
@@ -26,15 +25,18 @@ public:
     int getrec();
     int getvac();
     int gettime();
-    QTimer * timer;  // see https://doc.qt.io/qt-5.12/qtimer.html
+    QTimer * timer;
     int getN();
     void setN(int N);
     int getI();
     void setI(int I);
     int getItime();
     void setItime(int Itime);
+    void faster();
+    void slower();
+    void neutral();
 public slots:
-    void simulateSlot();
+    void simulateSlot();    
 };
 
 #endif // SIMULATOR_H
