@@ -49,7 +49,7 @@ void Pedestrian::computeNextState(double delta_t) {
         angle = 2*M_PI - angle;
         y_tPlusDelta=y+speed*qSin(angle)*delta_t;
     }
-    if(state == I){//Logica para cambiar de infectado a recuperado.
+    if(state == I){
         rec_time -= delta_t;
         if(0 >= rec_time){
             state = R;
@@ -108,9 +108,7 @@ void Pedestrian::putMask(){
 bool Pedestrian::getMask(){
     return this->mask;
 }
-/**
- * @brief Pedestrian::vaccine: Metodo para cambiar estado del individuo a vacunado.
- */
+
 void Pedestrian::vaccine(){
     this->state = V;
 }
