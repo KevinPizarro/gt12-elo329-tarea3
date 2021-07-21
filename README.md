@@ -39,6 +39,8 @@ Antes de ejecutar deberemos realizar un seteo previo, a continuación los pasos.
 - Se debe descargar la carpeta de la etapa (Stage) que se desee simular.
 - Se debe iniciar Qt Creator, cargando el proyecto basado en el archivo con extensión **.pro** descargado en el paso anterior.
 - Asegurarse de tener descargado e instalado el módulo Qt Charts. 
+- Se debe agregar a la carpeta build generada por QtCreator para la etapa el archivo config.txt
+- Se debe agregar en la parte de ejecución del QtCreator el argumento de linea de comando config.txt
 
 Finalmente, para ejecutar cada etapa del programa (con el seteo descrito anteriormente) simplemente dentro del IDE dar al botón Run, simbolizado con una flecha verde.
 
