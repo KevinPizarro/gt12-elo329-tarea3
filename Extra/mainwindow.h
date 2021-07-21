@@ -1,194 +1,129 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-using namespace std;
-/**
- * @brief MainWindow::MainWindow: Constructor de la clase MainWindow.
- * @param parent: Widget padre de la ventana principal.
- * @param sim: Simulador.
- */
-MainWindow::MainWindow(QWidget *parent,Simulator *sim) :
-    QMainWindow(parent),
-    simulator(sim),
-    ui(new Ui::MainWindow)
-{
-    timer = new QTimer(this); //Timer para determinar la frecuencia de actualizacion del grafico.
-    connect(this->timer,SIGNAL(timeout()),this,SLOT(actgraph()));
-    ui->setupUi(this);
-    //Iniciamos el grafico.
-    this->inf = new QLineSeries();
-    this->sus = new QLineSeries();
-    this->rec = new QLineSeries();
-    this->vac = new QLineSeries();
-    this->susrec = new QLineSeries();
-    this->recinf = new QLineSeries();
-    this->vacinf = new QLineSeries();
-    this->vaca = new QAreaSeries(vac);
-    this->infa = new QAreaSeries(vacinf,vac);
-    this->reca = new QAreaSeries(recinf,inf);
-    this->susa = new QAreaSeries(susrec,rec);
-    susa->setName("Susceptibles");
-    infa->setName("Infectados");
-    reca->setName("Recuperados");
-    vaca->setName("Vacunados");
-    vaca->setColor(QColor(149, 255, 128, 255));
-    susa->setColor(QColor(30,120,255,255));
-    infa->setColor(QColor(255,0,0,255));
-    reca->setColor(QColor(96,46,15,255));
-    this->chart = new QChart();
-    chart->addSeries(susa);
-    chart->addSeries(reca);
-    chart->addSeries(infa);
-    chart->addSeries(vaca);
-    chart->setTitle("Evolucion de la pandemia");
-    chart->createDefaultAxes();
-    this->chartView = new QChartView(chart);
-    this->setCentralWidget(chartView);
-    this->flag = true;
-    settings = new Settings(this,this->simulator->getN(),this->simulator->getI(),this->simulator->getItime());
-    this->installEventFilter(this);
-}
-/**
- * @brief MainWindow::~MainWindow: Destructor de Mainwindow.
- */
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-/**
- * @brief MainWindow::on_actionStart_triggered: SLOT a ejecutar al pulsar start.
- */
-void MainWindow::on_actionStart_triggered()
-{
-    this->CloseSet(this->settings->N,this->settings->I,this->settings->I_time);
-    this->resetgraph();
-    timer->start(200);
-    simulator->startSimulation();
-    flag = false;
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QtCharts>
+#include <QChartView>
+#include <QLineSeries>
+#include <QMainWindow>
+#include <QTimer>
+#include "Simulator.h"
+#include "settings.h"
+namespace Ui {
+class MainWindow;
 }
 
-/**
- * @brief MainWindow::on_actionStop_triggered: SLOT a ejecutar al pulsar stop.
- */
-void MainWindow::on_actionStop_triggered()
+class MainWindow : public QMainWindow
 {
-    simulator->stopSimulation();
-    this->simulator->neutral();
-    timer->stop();
-    flag = true;
-}
+    Q_OBJECT;
 
-void MainWindow::on_actionSettings_triggered(){
-    if(flag){
-        settings->show();
-    }
-}
-/**
- * @brief MainWindow::actgraph: SLOT a ejecutar cada timeout del Timer.
- */
-void MainWindow::actgraph(){
-    //Agregamos los nuevos puntos al grafico.
-    this->vac->append(simulator->gettime(),simulator->getvac());
-    this->inf->append(simulator->gettime(),simulator->getinf());
-    this->rec->append(simulator->gettime(),simulator->getrec());
-    this->sus->append(simulator->gettime(),simulator->getsus());
-    this->susrec->append(simulator->gettime(),simulator->getvac()+simulator->getsus()+simulator->getrec()+simulator->getinf());
-    this->recinf->append(simulator->gettime(),simulator->getvac()+simulator->getinf()+simulator->getrec());
-    this->vacinf->append(simulator->gettime(),simulator->getvac()+simulator->getinf());
-    delete this->vaca;
-    delete this->infa;
-    delete this->reca;
-    delete this->susa;
-    this->vaca = new QAreaSeries(vac);
-    this->infa = new QAreaSeries(vacinf,vac);
-    this->reca = new QAreaSeries(recinf,inf);
-    this->susa = new QAreaSeries(susrec,rec);
-    susa->setName("Susceptibles");
-    infa->setName("Infectados");
-    reca->setName("Recuperados");
-    vaca->setName("Vacunados");
-    vaca->setColor(QColor(149, 255, 128, 255));
-    susa->setColor(QColor(30,120,255,255));
-    infa->setColor(QColor(255,0,0,255));
-    reca->setColor(QColor(96,46,15,255));
-    chart->removeAllSeries();
-    chart->addSeries(susa);
-    chart->addSeries(reca);
-    chart->addSeries(infa);
-    chart->addSeries(vaca);
-    chart->setTitle("Evolucion de la pandemia");
-    chart->createDefaultAxes();
-    chartView->setChart(chart);
-}
+public:
+    explicit MainWindow(QWidget *parent = 0, Simulator *sim = NULL);
+    ~MainWindow();
+    /**
+     * @brief resetgraph: Metodo que reinicia el grafico de la UI.
+     */
+    void resetgraph();
 
-/**
- * @brief MainWindow::resetgraph: Metodo para reiniciar el grafico.
- */
-void MainWindow::resetgraph(){
-    delete this->inf;
-    delete this->sus;
-    delete this->rec;
-    delete this->infa;
-    delete this->susa;
-    delete this->reca;
-    delete this->vaca;
-    delete this->chart;
-    delete this->chartView;
-    this->inf = new QLineSeries();
-    this->sus = new QLineSeries();
-    this->rec = new QLineSeries();
-    this->vac = new QLineSeries();
-    this->susrec = new QLineSeries();
-    this->recinf = new QLineSeries();
-    this->vacinf = new QLineSeries();
-    this->vaca = new QAreaSeries(vac);
-    this->infa = new QAreaSeries(vacinf,vac);
-    this->reca = new QAreaSeries(recinf,inf);
-    this->susa = new QAreaSeries(susrec,rec);
-    susa->setName("Susceptibles");
-    infa->setName("Infectados");
-    reca->setName("Recuperados");
-    vaca->setName("Vacunados");
-    vaca->setColor(QColor(149, 255, 128, 255));
-    susa->setColor(QColor(30,120,255,255));
-    infa->setColor(QColor(255,0,0,255));
-    reca->setColor(QColor(96,46,15,255));
-    this->chart = new QChart();
-    chart->addSeries(susa);
-    chart->addSeries(reca);
-    chart->addSeries(infa);
-    chart->addSeries(vaca);
-    chart->setTitle("Evolucion de la pandemia");
-    chart->createDefaultAxes();
-    this->chartView = new QChartView(chart);
-    this->setCentralWidget(chartView);
-}
-void MainWindow::CloseSet(int N, int I, int Itime){
-    this->simulator->setN(N);
-    this->simulator->setI(I);
-    this->simulator->setItime(Itime);
-}
+private slots:
+    /**
+     * @brief on_actionStart_triggered: Si el boton start es presionado entonces da inicio a la simulacion.
+     */
+    void on_actionStart_triggered();
+    /**
+     * @brief on_actionStop_triggered: Si el boton stop es presionado entonces para la simulacion.
+     */
+    void on_actionStop_triggered();
+    /**
+     * @brief on_actionSettings_triggered: Si el boton settings es presionado, se llama a este slot.
+     */
+    void on_actionSettings_triggered();
+public slots:
+    /**
+     * @brief actgraph: Metodo que actualiza el grafico con los ultimos datos obtenidos.
+     */
+    void actgraph();
+    /**
+     * @brief CloseSet: Metodo a ejecutar al cerrar la ventana de settings.
+     * @param N: Cantidad de individuos nueva.
+     * @param I: Cantidad de infectados nueva.
+     * @param Itime: Nuevo tiempo de infeccion.
+     */
+    void CloseSet(int N, int I, int Itime);
+private:
+    /**
+     * @brief simulator Se crea un objeto de la clase Simulator.
+     */
+    Simulator *simulator;
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event){
-    if (obj == this) {
-        if (event->type() == QEvent::KeyPress) {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-            if(keyEvent->key() == 16777234){
-                this->simulator->slower();
-            }
-            else if(keyEvent->key() == 16777236){
-                this->simulator->faster();
-            }
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    else {
-        // pass the event on to the parent class
-        return QMainWindow::eventFilter(obj, event);
-    }
-}
+    Ui::MainWindow *ui;
+    /**
+     * @brief inf: Series superiores para infectados.
+     */
+    QLineSeries *inf;
+    /**
+     * @brief sus: Series superiores para susceptibles.
+     */
+    QLineSeries *sus;
+    /**
+     * @brief rec: Series superiores para recuperados.
+     */
+    QLineSeries *rec;
+    /**
+     * @brief rec: Series superiores para vacunados.
+     */
+    QLineSeries *vac;
+    /**
+     * @brief susrec: Series intermedias entre susceptibles y recuperados para un correcto "montaje".
+     */
+    QLineSeries *susrec;
+    /**
+     * @brief recinf: : Series intermedias entre recuperados e infectados para un correcto "montaje".
+     */
+    QLineSeries *recinf;
+    /**
+     * @brief recinf: : Series intermedias entre vacunados e infectados para un correcto "montaje".
+     */
+    QLineSeries *vacinf;
+    /**
+     * @brief infa: Series inferiores para infectados.
+     */
+    QAreaSeries *infa;
+    /**
+     * @brief susa: Series inferiores para susceptibles.
+     */
+    QAreaSeries *susa;
+    /**
+     * @brief reca: Series inferiores para recuperados.
+     */
+    QAreaSeries *reca;
+    /**
+     * @brief vaca: Series inferiores para vacunados
+     */
+    QAreaSeries *vaca;
+    /**
+     * @brief chart: Grafico.
+     */
+    QChart *chart;
+    /**
+     * @brief chartView: Vista de grafico.
+     */
+    QChartView *chartView;
+    /**
+     * @brief timer: Temporizador para la simulacion.
+     */
+    QTimer *timer;
+    /**
+     * @brief flag: Variable para revisar si la simulacion esta en pausa.
+     */
+    bool flag;
+    /**
+     * @brief settings: Ventana de settings.
+     */
+    Settings *settings;
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev);
+
+};
+
+
+#endif // MAINWINDOW_H
