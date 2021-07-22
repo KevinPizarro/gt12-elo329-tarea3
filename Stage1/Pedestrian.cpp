@@ -11,8 +11,8 @@
  */
 Pedestrian::Pedestrian (Comuna &com, double speed, double deltaAngle): comuna(com) {
     myRand = QRandomGenerator::securelySeeded();
-    this->x = myRand.generateDouble()*com->getWidth();
-    this->y = myRand.generateDouble()*com->getHeight();
+    this->x = myRand.generateDouble()*com.getWidth();
+    this->y = myRand.generateDouble()*com.getHeight();
     this->speed = speed*(0.9+0.2*myRand.generateDouble());
     this->deltaAngle = deltaAngle;
     this->angle = myRand.generateDouble()*2*M_PI;

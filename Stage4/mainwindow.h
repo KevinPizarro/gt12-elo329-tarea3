@@ -47,8 +47,6 @@ private:
     QTimer *timer;
     bool flag;
     Settings *settings;
-protected:
-    bool eventFilter(QObject *obj, QEvent *ev);
 };
 
 
